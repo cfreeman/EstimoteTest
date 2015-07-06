@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+<TextView
+    android:id="@+id/targetRange"
+    android:layout_width="fill_parent"    
+    android:layout_height="wrap_content"
+    android:text="Target Range: 1.00 to 1.05m"
+    />
+<TextView
+    android:id="@+id/currentRange"
+    android:layout_width="fill_parent"    
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:text="Current Range: unknown"
+    />
+<TextView
+    android:id="@+id/elapsedTime"
+    android:layout_width="fill_parent"    
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:text="Elapsed Time: unknown"
+    />
+<Button	
+    android:layout_width="fill_parent"    
+    android:layout_height="wrap_content"
+    android:layout_marginTop="200dp"
+    android:onClick="startClick"
+    android:text="START"
+    />
+</LinearLayout>
+

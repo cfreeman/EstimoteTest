@@ -40,8 +40,8 @@ public class EstimoteTest extends Activity
 	private static final Region ALL_ESTIMOTE_BEACONS_REGION = new Region("rid", null, null, null);
 	private BeaconManager beaconManager;
 
-	private double lower = 0.9;
-	private double upper = 1.1;
+	private double lower = 2.1;
+	private double upper = 3.9;
 	private long startTime = 0L;
 	private String estimote = "F7:0C:99:01:CC:FF";
 
@@ -65,32 +65,35 @@ public class EstimoteTest extends Activity
 		beaconManager.setRangingListener(new BeaconManager.RangingListener() {
 			@Override
 			public void onBeaconsDiscovered(Region region, final List<Beacon> rangedBeacons) {
-				for (Beacon b : rangedBeacons) {
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
 
-					if (b.getMacAddress().equals(estimote)) {
-						final double dist = Utils.computeAccuracy(b);
-						// Update the UI with the current distance.
+						long dTime = SystemClock.uptimeMillis() - startTime;
+						if (dTime > 60000 && startTime != 0L) {
+							stopTimer(dTime);
+						}
 
-						runOnUiThread(new Runnable() {
-							@Override
-							public void run() {
-								if (dist > lower && dist < upper && startTime != 0L) {
-									stopTimer(SystemClock.uptimeMillis());									
+						for (Beacon b : rangedBeacons) {
+							if (b.getMacAddress().equals(estimote)) {
+								final double dist = Utils.computeAccuracy(b);
+
+								if ((dist > lower && dist < upper && startTime != 0L)) {
+									stopTimer(dTime);
 								}
 
 								updateRange(dist);
 							}
-						});
+						}
 					}
-				}
+				});
 			}
 		});
 	}
 
-	private void stopTimer(long stopTime) {
-		double t = (stopTime - startTime) / 1000.0;
+	private void stopTimer(long dTime) {
 		startTime = 0L;
-		elapsedTime.setText("Elapsed Time: " + t + "s");
+		elapsedTime.setText("Elapsed Time: " + (dTime / 1000.0) + "s");
 	}
 
 	private void updateRange(double distance) {
@@ -108,7 +111,12 @@ public class EstimoteTest extends Activity
 			@Override
 			public void onServiceReady() {
 				try {
-					beaconManager.setForegroundScanPeriod(1000,5000);
+					// Defaults??
+					beaconManager.setForegroundScanPeriod(1000, 1000);
+
+					// How long to scan
+					// How long to wait.
+
 					beaconManager.startRanging(ALL_ESTIMOTE_BEACONS_REGION);
 				} catch (RemoteException e) {
 					Log.e(TAG, "Cannot start ranging", e);
